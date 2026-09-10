@@ -1,36 +1,49 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# HZ·OPS — Hala Zbib's portfolio
 
-## Getting Started
+A personal portfolio built as an operations control room: the top bar is a status strip, section headings are board labels, experience is a shift log, projects are a fleet of deployed services, skills are a systems inventory, education is a certifications register.
 
-First, run the development server:
+Next.js App Router, TypeScript, plain CSS variables. No component library, no animation library: the layout transitions are a hand-rolled FLIP on the Web Animations API.
+
+## Run
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev      # http://localhost:3000
+npm run build
+npm run lint
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Keyboard
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| key | action |
+| --- | --- |
+| `1`–`5` | jump to a section |
+| `j` / `k` | scroll down / up |
+| `t` | cycle theme (night shift → day shift → warehouse → dispatch → maintenance) |
+| `b` | toggle board mode (kiosk density) |
+| `?` | help overlay |
+| `esc` | collapse service detail / close help |
+| drag | the driver dot on the live tile re-routes to the nearest street |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+There is one easter egg. The help overlay hints at it.
 
-## Learn More
+## Layout
 
-To learn more about Next.js, take a look at the following resources:
+```
+src/app/layout.tsx        fonts (IBM Plex Mono for data, Space Grotesk for prose), metadata, pre-paint theme script
+src/app/globals.css       tokens, five themes, every component, board mode, mobile, reduced motion
+src/lib/content.ts        all copy: experience, education, projects, skills, nav, themes
+src/components/Console    root client component: keyboard map, theme, board mode, expand/collapse, active section
+src/components/*          TopBar · StatusBar · Panel · Operator (hero) · LiveTile · ShiftLog · Fleet · Inventory · Certs · HelpOverlay
+src/hooks/useFlip         FLIP layout transition (320ms, 30ms stagger)
+src/hooks/useSplitFlap    hero split-flap resolve (lands under 1.3s, runs once)
+src/hooks/useMedia        reduced-motion and theme stores (useSyncExternalStore)
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Editing content
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Everything visible lives in `src/lib/content.ts`. Add a project to `PROJECTS`; give it an `embed` URL and its expanded service panel hosts the live page in a 16:9 iframe. Skills are `"name|service record"` strings; the record shows on hover.
 
-## Deploy on Vercel
+## Design system
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Eleven color tokens (`--bg-0/1/2`, `--line`, `--line-strong`, `--fg-0/1/2`, `--accent`, `--accent-2`, `--ok/--warn/--down`), one type scale, a 4px spacing scale, zero radius, no shadows. Themes only swap token values on `<html data-theme>`. Motion tokens: 120 micro · 200 hover · 320 layout · 400 theme · 1200 hero, easing `cubic-bezier(.2,0,0,1)`. Every animation has a reduced-motion fallback.

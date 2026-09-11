@@ -3,7 +3,7 @@
   --bg-0: #0b0e13; --bg-1: #10141b; --bg-2: #161c25;
   --line: #232b37; --line-strong: #33404f;
   --fg-0: #e6eaf0; --fg-1: #9aa4b2; --fg-2: #5c6675;
-  --accent: #ff7ab8; --accent-2: #f5b84d;
+  --accent: #b48cff; --accent-2: #f5b84d;
   --ok: #3ddc97; --warn: #f5b84d; --down: #ff6b6b;
 
   --mono: var(--font-mono), "IBM Plex Mono", ui-monospace, Menlo, monospace;
@@ -31,8 +31,8 @@
   --ok: #3ddc97; --warn: #ffb454; --down: #ff6b6b;
 }
 :root[data-theme="maintenance"] {
-  --bg-0: #08070c; --bg-1: #0e0c15; --bg-2: #16131f; --line: #252032; --line-strong: #383147;
-  --fg-0: #ede8f5; --fg-1: #aba3ba; --fg-2: #665d75; --accent: #b48cff; --accent-2: #7fe3ff;
+  --bg-0: #0c070a; --bg-1: #140c11; --bg-2: #1d131a; --line: #2e2029; --line-strong: #43303b;
+  --fg-0: #f3e8ee; --fg-1: #b9a3b0; --fg-2: #735c6a; --accent: #ff7ab8; --accent-2: #7fe3ff;
   --ok: #3ddc97; --warn: #f5b84d; --down: #ff6b6b;
 }
 :root[data-theme="cold"] {

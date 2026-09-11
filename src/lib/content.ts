@@ -14,11 +14,11 @@ export const BIO =
 
 
 export const THEMES: { id: ThemeId; name: string; dot: string }[] = [
-  { id: "night", name: "night shift", dot: "#FF7AB8" },
+  { id: "night", name: "night shift", dot: "#B48CFF" },
   { id: "day", name: "day shift", dot: "#FFD166" },
   { id: "warehouse", name: "warehouse", dot: "#5CFF8F" },
   { id: "dispatch", name: "dispatch", dot: "#FFB454" },
-  { id: "maintenance", name: "maintenance", dot: "#B48CFF" },
+  { id: "maintenance", name: "maintenance", dot: "#FF7AB8" },
   { id: "cold", name: "cold storage", dot: "#5CE1E6" },
 ];
 

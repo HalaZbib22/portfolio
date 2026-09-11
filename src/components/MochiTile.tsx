@@ -4,9 +4,9 @@ import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "
 import { Panel } from "./Panel";
 import { MochiSprite } from "./MochiSprite";
 import { BOWL, HEART_EMPTY, HEART_FULL, ICONS, INK, MOUSE, MOUSE_CLASSES, PixelArt, POOP, SKULL, YARN, YARN_CLASSES, ZZZ } from "./PixelArt";
-import { CAT_NAME, type Light } from "@/lib/content";
+import { CAT_ADOPTED, CAT_BIRTHDAY, CAT_NAME, type Light } from "@/lib/content";
 import {
-  age, canPlay, clean, feed, hearts, light, meds, mood, needs, playResult, readPet, serverPet, subscribePet, tick, updatePet,
+  age, canPlay, clean, feed, hearts, light, meds, mood, needs, playResult, readPet, serverPet, subscribePet, tenure, tick, updatePet,
   zoomies as doZoomies, type Need, type Outcome,
 } from "@/lib/pet";
 
@@ -49,6 +49,10 @@ export function MochiTile({ zoomiesKey }: { zoomiesKey: number }) {
   const [log, setLog] = useState<LogLine[]>([]);
   const [clock, setClock] = useState("--:--");
   const [ageText, setAgeText] = useState("--");
+  const [tenureText, setTenureText] = useState("--");
+  const [armed, setArmed] = useState(false);
+  const armedRef = useRef(false);
+  useEffect(() => { armedRef.current = armed; }, [armed]);
   const [seenZoomies, setSeenZoomies] = useState(0);
   const zoomies = zoomiesKey > seenZoomies;
   const timers = useRef<number[]>([]);
@@ -80,7 +84,7 @@ export function MochiTile({ zoomiesKey }: { zoomiesKey: number }) {
       else if (away > 3_600_000) { say(`you were gone ${Math.round(away / 3_600_000)}h.`); pushLog(`you were gone ${Math.round(away / 3_600_000)}h · she noticed`, "warn"); }
       else pushLog("resumed · she pretends not to care");
     }, 0);
-    const run = () => { const now = Date.now(); updatePet((p) => tick(p, now)); setClock(stamp()); setAgeText(age(readPet(), now)); };
+    const run = () => { const now = Date.now(); updatePet((p) => tick(p, now)); setClock(stamp()); setAgeText(age(now, CAT_BIRTHDAY)); setTenureText(tenure(readPet(), now)); };
     run();
     const iv = window.setInterval(run, TICK_MS);
     return () => { window.clearTimeout(t0); window.clearInterval(iv); };
@@ -158,8 +162,10 @@ export function MochiTile({ zoomiesKey }: { zoomiesKey: number }) {
     if (screen === "game") return guess("L");
     if (screen === "meter") return setMeterPage((p) => (p + 1) % 2);
     if (screen !== "idle") return;
-    setSel((s) => (s + 1) % ICON_ORDER.length);
-  }, [screen, guess]);
+    const next = (sel + 1) % ICON_ORDER.length;
+    setSel(next);
+    say(`${ICON_ORDER[next].toUpperCase()} · B to confirm`);
+  }, [screen, sel, guess, say]);
   const pressB = useCallback(() => {
     if (screen === "game") return guess("R");
     if (screen === "meter") return setMeterPage((p) => (p + 1) % 2);
@@ -173,18 +179,26 @@ export function MochiTile({ zoomiesKey }: { zoomiesKey: number }) {
   }, [screen, pushLog]);
   const clickIcon = (i: number) => { if (screen !== "idle") setScreen("idle"); setSel(i); activate(ICON_ORDER[i]); };
 
-  // keyboard, only while the device has focus: ← → select (or guess), Enter = B, Backspace = C
+  // the device is "armed" after you click anywhere on it (and disarmed by clicking elsewhere); while armed,
+  // A / B / C, ← → ↵ ⌫ go to the device and never reach the site's own keymap (b would otherwise flip board mode)
   useEffect(() => {
+    const onPointer = (e: PointerEvent) => { setArmed(!!deviceRef.current?.contains(e.target as Node)); };
     const onKey = (e: KeyboardEvent) => {
-      if (!deviceRef.current?.contains(document.activeElement)) return;
-      if (e.key === "ArrowLeft") { e.preventDefault(); if (screen === "game") guess("L"); else setSel((s) => (s + ICON_ORDER.length - 1) % ICON_ORDER.length); }
-      else if (e.key === "ArrowRight") { e.preventDefault(); if (screen === "game") guess("R"); else pressA(); }
-      else if (e.key === "Enter") { e.preventDefault(); pressB(); }
-      else if (e.key === "Backspace") { e.preventDefault(); pressC(); }
+      if (!armedRef.current || e.metaKey || e.ctrlKey || e.altKey) return;
+      const k = e.key.toLowerCase();
+      let handled = true;
+      if (k === "a") pressA();
+      else if (k === "b" || k === "enter") pressB();
+      else if (k === "c" || k === "backspace") pressC();
+      else if (k === "arrowleft") { if (screen === "game") guess("L"); else { const prev = (sel + ICON_ORDER.length - 1) % ICON_ORDER.length; setSel(prev); say(`${ICON_ORDER[prev].toUpperCase()} · B to confirm`); } }
+      else if (k === "arrowright") { if (screen === "game") guess("R"); else pressA(); }
+      else handled = false;
+      if (handled) { e.preventDefault(); e.stopImmediatePropagation(); }
     };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [screen, guess, pressA, pressB, pressC]);
+    document.addEventListener("pointerdown", onPointer, true);
+    window.addEventListener("keydown", onKey, true);
+    return () => { document.removeEventListener("pointerdown", onPointer, true); window.removeEventListener("keydown", onKey, true); };
+  }, [screen, sel, guess, say, pressA, pressB, pressC]);
 
   const m = mood(pet);
   const need = needs(pet);
@@ -192,6 +206,7 @@ export function MochiTile({ zoomiesKey }: { zoomiesKey: number }) {
   const iconButton = (ic: Icon, i: number) => (
     <button key={ic} className="icon" data-on={sel === i} onClick={() => clickIcon(i)} title={ic} aria-label={ic}>
       <PixelArt rows={ICONS[ic]} classes={INK} px={2} />
+      <span className="icon-label">{ic}</span>
     </button>
   );
 
@@ -202,7 +217,7 @@ export function MochiTile({ zoomiesKey }: { zoomiesKey: number }) {
         <span className="hub"><span className="light" data-light={zoomies ? "warn" : MOOD_LIGHT[m]} />{zoomies ? "ZOOMIES" : m}</span>
       </div>
 
-      <div ref={deviceRef} className="device" tabIndex={0} aria-label={`${CAT_NAME}, a virtual pet. Mood: ${m}. Click to use the keyboard.`}>
+      <div ref={deviceRef} className="device" data-armed={armed} tabIndex={0} aria-label={`${CAT_NAME}, a virtual pet. Mood: ${m}. Click to use the keyboard.`}>
         <div className="lcd" data-screen={screen} data-asleep={pet.asleep} data-mood={petMood}>
           <div className="icons">{ICON_ORDER.slice(0, 3).map((ic, i) => iconButton(ic, i))}</div>
 
@@ -218,7 +233,9 @@ export function MochiTile({ zoomiesKey }: { zoomiesKey: number }) {
                 ) : (
                   <>
                     <div className="row"><span>AGE</span><b>{ageText}</b></div>
+                    <div className="row"><span>ADOPTED</span><b>{CAT_ADOPTED}</b></div>
                     <div className="row"><span>WEIGHT</span><b>{pet.weight} LB</b></div>
+                    <div className="row"><span>WITH YOU</span><b>{tenureText}</b></div>
                     <div className="row"><span>STATUS</span><b>{pet.sick ? "SICK" : pet.poop ? "MESSY" : "OK"}</b></div>
                   </>
                 )}
@@ -260,6 +277,7 @@ export function MochiTile({ zoomiesKey }: { zoomiesKey: number }) {
           <button onClick={pressB}><span />B<small>{screen === "game" ? "right" : screen === "meter" ? "next" : "confirm"}</small></button>
           <button onClick={pressC}><span />C<small>cancel</small></button>
         </div>
+        <div className="keyhint">{armed ? "KEYS LIVE · A B C · ← → ↵ ⌫" : "CLICK THE DEVICE TO USE A B C ON YOUR KEYBOARD"}</div>
       </div>
 
       <div className="feed" aria-live="off">

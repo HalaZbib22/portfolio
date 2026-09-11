@@ -6,6 +6,9 @@ export const FLAP = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#/·";
 
 /** The station cat that sits on the status bar. Rename freely. */
 export const CAT_NAME = "MOCHI";
+/** Adopted 10 Apr 2024 at roughly six to eight weeks old, so born around late February 2024. */
+export const CAT_BIRTHDAY = "2024-02-25";
+export const CAT_ADOPTED = "10 APR 2024";
 
 export const TITLE_LINE = ["frontend engineer with a design habit", "react / next.js", ".net on the side"];
 

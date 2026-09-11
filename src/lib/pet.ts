@@ -119,10 +119,19 @@ export function zoomies(p: Pet): Pet {
   return { ...p, asleep: false, fun: clamp(p.fun + 20), energy: clamp(p.energy - 15) };
 }
 
-export function age(p: Pet, now: number): string {
+/** Mochi's real age from her birthday, in years and months. */
+export function age(now: number, birthday: string): string {
+  const b = new Date(birthday);
+  const d = new Date(now);
+  let months = (d.getFullYear() - b.getFullYear()) * 12 + (d.getMonth() - b.getMonth());
+  if (d.getDate() < b.getDate()) months -= 1;
+  return `${Math.floor(months / 12)}Y ${months % 12}M`;
+}
+/** How long this browser has been looking after her. */
+export function tenure(p: Pet, now: number): string {
   if (!p.born) return "--";
   const h = Math.floor((now - p.born) / 3_600_000);
-  return `${Math.floor(h / 24)}D ${h % 24}H`;
+  return h < 24 ? `${h}H` : `${Math.floor(h / 24)}D`;
 }
 
 // ── store (client only) ────────────────────────────────────────────────────

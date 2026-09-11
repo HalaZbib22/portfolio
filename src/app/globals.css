@@ -377,11 +377,12 @@ kbd { font: inherit; border: 1px solid var(--line-strong); padding: 1px 5px; col
 .cat-pupil rect { fill: var(--mochi-pupil); }
 .cat-line rect { fill: var(--mochi-line); }
 .cat-shadow rect { fill: color-mix(in oklch, black 22%, transparent); }
-.cat-tail rect { fill: var(--mochi-tail); }
+.cat-tailfur rect { fill: var(--mochi-tail); }
 .cat-eyes rect { fill: var(--mochi-eye); }
 .cat-look { transition: transform var(--t-hover) var(--ease); }
 .cat-eyes { animation: cat-blink 5.2s steps(1) infinite; }
-.cat-tail { animation: cat-sway 3.2s ease-in-out infinite; }
+.cat-tail { animation: tail-a 3.2s steps(1) infinite; }
+.cat-tail[data-frame="b"] { visibility: hidden; animation-name: tail-b; }
 .statusbar > .cat { position: absolute; left: 196px; bottom: 100%; z-index: 21; line-height: 0; pointer-events: none; }
 .cat-hit { pointer-events: auto; display: block; line-height: 0; cursor: pointer; }
 .cat-hit:focus-visible { outline-offset: 4px; }
@@ -396,7 +397,8 @@ kbd { font: inherit; border: 1px solid var(--line-strong); padding: 1px 5px; col
 }
 .cat-zzz { border: 0; background: none; color: var(--fg-2); animation: cat-zzz 2.4s ease-in-out infinite; }
 @keyframes cat-blink { 0%, 93%, 100% { transform: scaleY(1); } 94%, 98% { transform: scaleY(0.2); } }
-@keyframes cat-sway { 0%, 100% { transform: rotate(-5deg); } 50% { transform: rotate(5deg); } }
+@keyframes tail-a { 0%, 74% { visibility: visible; } 75%, 100% { visibility: hidden; } }
+@keyframes tail-b { 0%, 74% { visibility: hidden; } 75%, 100% { visibility: visible; } }
 @keyframes cat-zzz { 0% { opacity: 0; transform: translateY(2px); } 30%, 70% { opacity: 1; } 100% { opacity: 0; transform: translateY(-6px); } }
 @media (max-width: 720px) { .root .statusbar > .cat { left: 100px; } }
 @media (prefers-reduced-motion: reduce) { .cat-eyes, .cat-tail, .cat-zzz, .pet { animation: none !important; } }

@@ -17,20 +17,20 @@ export const BIO =
 
 
 export const THEMES: { id: ThemeId; name: string; dot: string }[] = [
-  { id: "night", name: "night shift", dot: "#B48CFF" },
-  { id: "day", name: "day shift", dot: "#FFD166" },
-  { id: "warehouse", name: "warehouse", dot: "#5CFF8F" },
-  { id: "dispatch", name: "dispatch", dot: "#FFB454" },
-  { id: "maintenance", name: "maintenance", dot: "#FF7AB8" },
-  { id: "cold", name: "cold storage", dot: "#5CE1E6" },
+  { id: "night", name: "midnight", dot: "#B48CFF" },
+  { id: "day", name: "daylight", dot: "#FFD166" },
+  { id: "warehouse", name: "game boy", dot: "#5CFF8F" },
+  { id: "dispatch", name: "arcade", dot: "#FFB454" },
+  { id: "maintenance", name: "bubblegum", dot: "#FF7AB8" },
+  { id: "cold", name: "glacier", dot: "#5CE1E6" },
 ];
 
 export const NAV: { num: string; label: string; id: string }[] = [
-  { num: "01", label: "OPERATOR", id: "s1" },
-  { num: "02", label: "SHIFT LOG", id: "s2" },
-  { num: "03", label: "FLEET", id: "s3" },
-  { num: "04", label: "INVENTORY", id: "s4" },
-  { num: "05", label: "CERTIFICATIONS", id: "s5" },
+  { num: "01", label: "PLAYER", id: "s1" },
+  { num: "02", label: "CAMPAIGN", id: "s2" },
+  { num: "03", label: "SHIPPED", id: "s3" },
+  { num: "04", label: "SKILL TREE", id: "s4" },
+  { num: "05", label: "ACHIEVEMENTS", id: "s5" },
 ];
 
 export const CONTACT = {

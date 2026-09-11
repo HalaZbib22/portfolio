@@ -11,7 +11,7 @@ export function StatusBar({ active, coordRef, zoomiesKey }: { active: number; co
       <StationCat zoomiesKey={zoomiesKey} />
       <div className="sec">
         <span className="light" data-light="ok" />
-        SEC {n.num}
+        LVL {n.num}
         <span className="sec-label"> · {n.label}</span>
       </div>
       <div className="hints">

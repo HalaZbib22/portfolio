@@ -10,7 +10,7 @@ const stop = (e: MouseEvent) => e.stopPropagation();
 
 export function Fleet({ expanded, onToggle }: Props) {
   return (
-    <Panel id="s3" panel="fleet" index={3} tab="03 · FLEET" right={`${PROJECTS.length} SERVICES · ${PROJECTS.length} UP · 0 DOWN`}>
+    <Panel id="s3" panel="fleet" index={3} tab="03 · SHIPPED" right={`${PROJECTS.length} BUILDS · ALL PLAYABLE`}>
       <div className="fleet-grid">
         {PROJECTS.map((p) => (
           <ServiceCard key={p.id} p={p} open={expanded === p.id} onToggle={onToggle} />
@@ -39,9 +39,9 @@ function ServiceCard({ p, open, onToggle }: { p: Project; open: boolean; onToggl
         </div>
       </div>
       <div className="actions">
-        <button className="btn" onClick={toggle}>{open ? "close · esc" : "service detail"}</button>
+        <button className="btn" onClick={toggle}>{open ? "close · esc" : "read more"}</button>
         <a className="btn-ghost" href={p.href ?? CONTACT.linkedin} target="_blank" rel="noreferrer" onClick={stop}>
-          {p.linkLabel ?? "production · private"}
+          {p.linkLabel ?? "at koein · private"}
         </a>
         {p.live && (
           <a className="btn-ghost" href={p.live} target="_blank" rel="noreferrer" onClick={stop} title={p.liveNote}>
@@ -52,7 +52,7 @@ function ServiceCard({ p, open, onToggle }: { p: Project; open: boolean; onToggl
       {open && (
         <div className="detail">
           <div className="topo">
-            <div className="h">service topology</div>
+            <div className="h">how it is wired</div>
             <div className="nodes">
               {p.arch.map((n, i) => (
                 <span key={n} className="node"><span>{n}</span>{i < p.arch.length - 1 && <i>→</i>}</span>
@@ -68,7 +68,7 @@ function ServiceCard({ p, open, onToggle }: { p: Project; open: boolean; onToggl
           {p.embed && (
             <div className="embed">
               <div className="embed-head">
-                <span className="l"><span className="tag-l">LIVE · EMBEDDED SERVICE</span><span className="note">{p.embedNote}</span></span>
+                <span className="l"><span className="tag-l">LIVE · PLAYABLE BUILD</span><span className="note">{p.embedNote}</span></span>
                 <span className="r">
                   <span className="light" data-light="ok" />interactive · pan / zoom / pick
                   <a href={p.href} target="_blank" rel="noreferrer" onClick={stop}>open ↗</a>

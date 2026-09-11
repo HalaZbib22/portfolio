@@ -3,7 +3,7 @@ import { EDUCATION } from "@/lib/content";
 
 export function Certs() {
   return (
-    <Panel id="s5" panel="certs" index={5} tab="05 · CERTIFICATIONS" right="REGISTER">
+    <Panel id="s5" panel="certs" index={5} tab="05 · ACHIEVEMENTS" right="EDUCATION · UNLOCKED">
       <div className="rows">
         {EDUCATION.map((e) => (
           <div key={e.school} className="row" tabIndex={0}>

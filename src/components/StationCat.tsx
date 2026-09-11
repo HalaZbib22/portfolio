@@ -54,10 +54,10 @@ export function StationCat({ zoomiesKey: rushKey }: { zoomiesKey: number }) {
 
   const mood = alert ? "alert" : asleep ? "asleep" : "idle";
   return (
-    <div ref={ref} className="cat" data-mood={mood} title={`${CAT_NAME} · station cat`}>
+    <div ref={ref} className="cat" data-mood={mood} title={`${CAT_NAME} · sidekick`}>
       {talk && <span className="cat-say">{talk}</span>}
       {asleep && !talk && <span className="cat-zzz" aria-hidden>z</span>}
-      <button className="cat-hit" onClick={poke} aria-label={`${CAT_NAME}, the station cat`}>
+      <button className="cat-hit" onClick={poke} aria-label={`${CAT_NAME}, the sidekick`}>
         <MochiSprite px={PX} eyesRef={eyesRef} />
       </button>
     </div>

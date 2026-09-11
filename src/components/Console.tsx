@@ -125,7 +125,7 @@ export default function Console() {
         <Inventory />
         <Certs />
         <footer className="footer">
-          <span><span className="hi">END OF SHIFT</span> · handover: <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a></span>
+          <span><span className="hi">GAME SAVED</span> · continue: <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a></span>
           <span>built in next.js · hand-rolled flip · no component library · <span className="k">press ? for help</span></span>
         </footer>
       </main>

@@ -16,7 +16,7 @@ export function TopBar({ active, theme, board, onJump, onTheme, onToggleBoard }:
     <header className="topbar">
       <div className="brand">
         <span className="light" data-light="ok" />
-        <b>HZ·OPS</b>
+        <b>HZ·SYS</b>
         <span className="brand-sub">portfolio console v4.2</span>
       </div>
       <nav className="nav" aria-label="Sections">

@@ -1,4 +1,4 @@
-# Portfolio (HZ·OPS)
+# Portfolio (HZ·SYS)
 
 Next.js App Router + TypeScript, plain CSS. No Tailwind, no component library, no animation library.
 

@@ -1,6 +1,6 @@
-# HZ·OPS — Hala Zbib's portfolio
+# HZ·SYS — Hala Zbib's portfolio
 
-A personal portfolio built as an operations control room: the top bar is a status strip, section headings are board labels, experience is a shift log, projects are a fleet of deployed services, skills are a systems inventory, education is a certifications register.
+A personal portfolio built as a retro console: panels with tabs, a status bar, six themes, and a tamagotchi of my cat. Sections are PLAYER (about), STORY MODE (work history), SHIPPED (projects), SKILL TREE, and ACHIEVEMENTS (education).
 
 Next.js App Router, TypeScript, plain CSS variables. No component library, no animation library: the layout transitions are a hand-rolled FLIP on the Web Animations API.
 
@@ -17,9 +17,9 @@ npm run lint
 
 | key | action |
 | --- | --- |
-| `1`–`5` | jump to a section |
+| `1`–`5` | jump to a level (section) |
 | `j` / `k` | scroll down / up |
-| `t` | cycle theme (night shift → day shift → warehouse → dispatch → maintenance → cold storage) |
+| `t` | cycle theme (midnight → daylight → game boy → arcade → bubblegum → glacier) |
 | `b` | toggle board mode (kiosk density) |
 | `?` | help overlay |
 | `esc` | collapse service detail / close help |

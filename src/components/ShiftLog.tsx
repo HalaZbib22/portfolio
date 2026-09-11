@@ -29,7 +29,7 @@ export function ShiftLog() {
   }, []);
 
   return (
-    <Panel ref={ref} id="s2" panel="shift" index={2} tab="02 · SHIFT LOG" right="EXPERIENCE · REVERSE CHRONOLOGICAL">
+    <Panel ref={ref} id="s2" panel="shift" index={2} tab="02 · STORY MODE" right="WORK HISTORY · NEWEST FIRST">
       <div className="shift">
         <div className="track" ref={track}><div className="fill" /><div className="marker" /></div>
         <div className="rows">
@@ -41,7 +41,7 @@ export function ShiftLog() {
                 <span className="dates">{e.dates}</span>
                 <span className="city">{e.city}</span>
               </div>
-              <div className="tele-row"><div className="tele-text"><span className="k">▸ LOG</span>{e.highlight}</div></div>
+              <div className="tele-row"><div className="tele-text"><span className="k">▸ CHAPTER</span>{e.highlight}</div></div>
             </div>
           ))}
         </div>

@@ -7,7 +7,7 @@ import { BIO, CONTACT, HERO, TITLE_LINE } from "@/lib/content";
 export function Operator({ reduced }: { reduced: boolean }) {
   const { chars, done } = useSplitFlap(HERO, reduced);
   return (
-    <Panel id="s1" panel="operator" index={0} tab="01 · OPERATOR">
+    <Panel id="s1" panel="operator" index={0} tab="01 · PLAYER" right="HALA ZBIB · SINCE 2022">
       <h1 className="hero-row" data-done={done} aria-label={HERO}>
         {chars.map((c, i) => (
           <span key={i} className="hero-tile" data-space={c === " "} aria-hidden>
@@ -22,13 +22,13 @@ export function Operator({ reduced }: { reduced: boolean }) {
       </div>
       <p className="bio">{BIO}</p>
       <dl className="kv">
-        <div><dt>station</dt><dd>Beirut, Lebanon <span className="dim">· UTC+3</span></dd></div>
-        <div><dt>channel</dt><dd><a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a></dd></div>
-        <div><dt>uplink</dt><dd><a href={CONTACT.linkedin} target="_blank" rel="noreferrer">{CONTACT.linkedinLabel}</a></dd></div>
-        <div><dt>protocols</dt><dd>arabic <span className="dim">(native)</span> · english · french</dd></div>
-        <div><dt>uptime</dt><dd>4+ years in production</dd></div>
-        <div><dt>role</dt><dd>frontend lead <span className="dim">→</span> .net backend</dd></div>
-        <div><dt>station cat</dt><dd>mochi <span className="dim">· bottom rail · click her</span></dd></div>
+        <div><dt>based in</dt><dd>Beirut, Lebanon <span className="dim">· UTC+3</span></dd></div>
+        <div><dt>email</dt><dd><a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a></dd></div>
+        <div><dt>linkedin</dt><dd><a href={CONTACT.linkedin} target="_blank" rel="noreferrer">{CONTACT.linkedinLabel}</a></dd></div>
+        <div><dt>speaks</dt><dd>arabic <span className="dim">(native)</span> · english · french</dd></div>
+        <div><dt>playtime</dt><dd>4+ years in production</dd></div>
+        <div><dt>class</dt><dd>frontend lead <span className="dim">→</span> .net backend</dd></div>
+        <div><dt>sidekick</dt><dd>mochi <span className="dim">· bottom rail · click her</span></dd></div>
       </dl>
     </Panel>
   );

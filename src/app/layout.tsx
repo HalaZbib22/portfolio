@@ -9,17 +9,17 @@ const arcade = Press_Start_2P({ variable: "--font-arcade", subsets: ["latin"], w
 export const metadata: Metadata = {
   title: "Hala Zbib — Senior Full-Stack Engineer",
   description:
-    "Senior full-stack engineer in Beirut. React / Next.js / TypeScript / .NET. Real-time systems and data-dense operational UIs: the screens that run a delivery operation.",
+    "Senior full-stack engineer in Beirut. React / Next.js / TypeScript / .NET. Real-time, data-dense UIs with a design habit, and a pixel cat you can feed.",
   openGraph: {
     title: "Hala Zbib — Senior Full-Stack Engineer",
-    description: "Real-time systems and operational UIs. React / Next.js / .NET. Beirut, Lebanon.",
+    description: "Real-time UIs with a design habit. React / Next.js / .NET. Beirut, Lebanon. Comes with a tamagotchi.",
     type: "website",
   },
 };
 
 export const viewport: Viewport = { themeColor: "#0B0E13", colorScheme: "dark" };
 
-// Applies the saved theme before first paint so returning visitors never see a flash of "night shift".
+// Applies the saved theme before first paint so returning visitors never see a flash of the default theme.
 const themeScript = `try{var t=localStorage.getItem('hz-theme');if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}`;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

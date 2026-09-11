@@ -3,7 +3,7 @@ import { GROUPS } from "@/lib/content";
 
 export function Inventory() {
   return (
-    <Panel id="s4" panel="inventory" index={4} tab="04 · INVENTORY" right="SYSTEMS · HOVER FOR SERVICE RECORD">
+    <Panel id="s4" panel="inventory" index={4} tab="04 · SKILL TREE" right="HOVER FOR WHERE I USED IT">
       <div className="groups">
         {GROUPS.map((g) => (
           <div key={g.name}>

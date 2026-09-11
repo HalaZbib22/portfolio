@@ -59,7 +59,7 @@ export function MochiTile({ zoomiesKey }: { zoomiesKey: number }) {
   const later = useCallback((ms: number, fn: () => void) => { timers.current.push(window.setTimeout(fn, ms)); }, []);
   useEffect(() => { const t = timers.current; return () => t.forEach(clearTimeout); }, []);
 
-  const pushLog = useCallback((t: string, tone?: LogLine["tone"]) => setLog((l) => [{ t: stamp(), text: t, tone }, ...l].slice(0, 2)), []);
+  const pushLog = useCallback((t: string, tone?: LogLine["tone"]) => setLog((l) => [{ t: stamp(), text: t, tone }, ...l].slice(0, 3)), []);
   const say = useCallback((s: string) => { setText(s); setShown(0); }, []);
   const commit = useCallback((out: Outcome, tone?: LogLine["tone"]) => {
     if (out.pet !== readPet()) updatePet(() => tick(out.pet, Date.now()));
@@ -280,6 +280,17 @@ export function MochiTile({ zoomiesKey }: { zoomiesKey: number }) {
         <div className="keyhint">{armed ? "KEYS LIVE · A B C · ← → ↵ ⌫" : "CLICK THE DEVICE TO USE A B C ON YOUR KEYBOARD"}</div>
       </div>
 
+      <div className="vitals" aria-label="Vitals">
+        <Vital label="hungry" n={hearts(pet.food)} />
+        <Vital label="happy" n={hearts(pet.fun)} />
+        <Vital label="energy" n={hearts(pet.energy)} />
+        <div className="vital-meta">
+          <span>weight <b>{pet.weight} lb</b></span>
+          <span>floor <b data-bad={pet.poop >= 2}>{pet.poop === 0 ? "clean" : `${pet.poop} pile${pet.poop > 1 ? "s" : ""}`}</b></span>
+          <span>health <b data-bad={pet.sick}>{pet.sick ? "sick" : "ok"}</b></span>
+        </div>
+      </div>
+
       <div className="feed" aria-live="off">
         {log.map((l, i) => (
           <div key={`${l.t}-${i}-${l.text}`} className="order">
@@ -289,6 +300,19 @@ export function MochiTile({ zoomiesKey }: { zoomiesKey: number }) {
         ))}
       </div>
     </Panel>
+  );
+}
+
+const HEART = { "#": "vheart" };
+function Vital({ label, n }: { label: string; n: number }) {
+  return (
+    <div className="vital">
+      <span className="vital-label">{label}</span>
+      <span className="hearts" data-n={n}>
+        {Array.from({ length: 4 }).map((_, i) => <PixelArt key={i} rows={i < n ? HEART_FULL : HEART_EMPTY} classes={HEART} px={2} className={i < n ? "on" : "off"} />)}
+      </span>
+      <b className="vital-n">{n}/4</b>
+    </div>
   );
 }
 

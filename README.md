@@ -23,7 +23,7 @@ npm run lint
 | `b` | toggle board mode (kiosk density) |
 | `?` | help overlay |
 | `esc` | collapse service detail / close help |
-| drag | the driver dot on the live tile re-routes to the nearest street |
+| hover | the floor of the live tile: the laser dot follows the pointer and Mochi hunts it |
 
 There is one easter egg. The help overlay hints at it.
 

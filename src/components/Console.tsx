@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState, type PointerEvent } from "rea
 import { TopBar } from "./TopBar";
 import { StatusBar } from "./StatusBar";
 import { Operator } from "./Operator";
-import { LiveTile } from "./LiveTile";
+import { MochiTile } from "./MochiTile";
 import { ShiftLog } from "./ShiftLog";
 import { Fleet } from "./Fleet";
 import { Inventory } from "./Inventory";
@@ -23,7 +23,7 @@ export default function Console() {
   const [expanded, setExpanded] = useState<string | null>(null);
   const [help, setHelp] = useState(false);
   const [active, setActive] = useState(0);
-  const [rushKey, setRushKey] = useState(0);
+  const [zoomiesKey, setZoomiesKey] = useState(0);
   const typed = useRef("");
   const flip = useFlip(rootRef, reduced);
 
@@ -69,8 +69,8 @@ export default function Console() {
         else if (expanded) toggleProject(expanded);
       }
       if (/^[a-z]$/.test(k)) {
-        typed.current = (typed.current + k).slice(-4);
-        if (typed.current === "rush") { typed.current = ""; setRushKey((n) => n + 1); }
+        typed.current = (typed.current + k).slice(-5);
+        if (typed.current === "mochi") { typed.current = ""; setZoomiesKey((n) => n + 1); }
       }
     };
     window.addEventListener("keydown", onKey);
@@ -119,7 +119,7 @@ export default function Console() {
       <TopBar active={active} theme={theme} board={mode === "board"} onJump={jump} onTheme={setTheme} onToggleBoard={toggleMode} />
       <main className="container">
         <Operator reduced={reduced} />
-        <LiveTile rushKey={rushKey} />
+        <MochiTile zoomiesKey={zoomiesKey} />
         <ShiftLog />
         <Fleet expanded={expanded} onToggle={toggleProject} />
         <Inventory />
@@ -129,7 +129,7 @@ export default function Console() {
           <span>built in next.js · hand-rolled flip · no component library · <span className="k">press ? for help</span></span>
         </footer>
       </main>
-      <StatusBar active={active} coordRef={coordRef} rushKey={rushKey} />
+      <StatusBar active={active} coordRef={coordRef} zoomiesKey={zoomiesKey} />
       {help && <HelpOverlay onClose={() => setHelp(false)} />}
     </div>
   );

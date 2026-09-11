@@ -12,11 +12,11 @@ export function HelpOverlay({ onClose }: { onClose: () => void }) {
           <kbd>t</kbd><span>cycle theme: night shift → day shift → warehouse → dispatch → maintenance</span>
           <kbd>b</kbd><span>toggle board mode (kiosk density)</span>
           <kbd>esc</kbd><span>collapse service detail / close this</span>
-          <kbd>drag</kbd><span>the driver dot re-routes to the nearest street</span>
+          <kbd>hover</kbd><span>the floor in the live tile: the laser dot follows you and Mochi hunts it. catches are counted</span>
           <kbd>click</kbd><span>the cat on the bottom rail. she watches the cursor and naps when you stop moving</span>
         </div>
         <div className="egg">
-          <b>▲ dispatch command</b> · the board listens for one four-letter word every warehouse dreads on a friday evening. type it anywhere.
+          <b>▲ station command</b> · the console listens for one five-letter name. type it anywhere and clear the floor.
         </div>
       </div>
     </div>

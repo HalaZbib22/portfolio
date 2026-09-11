@@ -3,41 +3,13 @@
 import { useEffect, useRef, useState } from "react";
 import { CAT_NAME } from "@/lib/content";
 
-/*
- * Pixel grid, 16 × 12: the original character, in Mochi's colours.
- * c = cream fur, m = taupe (ears, tail tip), e = blue eye, n = pink nose, t = tail (own group so it can sway).
- */
-const SPRITE = [
-  "..m.......m.....",
-  "..mm.....mm.....",
-  "..cmcccccmc.....",
-  "..cecccccec.....",
-  "..ccccnccccc....",
-  "...ccccccc......",
-  "..ccccccccc.....",
-  ".ccccccccccc....",
-  ".ccccccccccc..t.",
-  ".ccccccccccc.tt.",
-  ".ccccccccccctt..",
-  ".cc.cc...cc.cc..",
-];
-const PX = 3;
-const W = SPRITE[0].length * PX;
-const H = SPRITE.length * PX;
+import { MochiSprite } from "./MochiSprite";
 
-type Cell = { x: number; y: number };
-const cells = (ch: string): Cell[] =>
-  SPRITE.flatMap((row, y) => [...row].map((c, x) => (c === ch ? { x, y } : null)).filter((c): c is Cell => c !== null));
-const CREAM = cells("c");
-const MASK = cells("m");
-const EYES = cells("e");
-const NOSE = cells("n");
-const TAIL = cells("t");
-
+const PX = 2;
 const SLEEP_AFTER = 40_000;
 
-/** rushKey increments on the order-rush easter egg; the cat goes on alert for a few seconds. */
-export function StationCat({ rushKey }: { rushKey: number }) {
+/** zoomiesKey increments on the easter egg; the cat goes on alert for a few seconds. */
+export function StationCat({ zoomiesKey: rushKey }: { zoomiesKey: number }) {
   const ref = useRef<HTMLDivElement>(null);
   const eyesRef = useRef<SVGGElement>(null);
   const [dozing, setDozing] = useState(false);
@@ -57,7 +29,7 @@ export function StationCat({ rushKey }: { rushKey: number }) {
       const dx = e.clientX - (r.left + r.width / 2);
       const dy = e.clientY - (r.top + r.height * 0.3);
       const d = Math.max(1, Math.hypot(dx, dy));
-      const k = Math.min(1, d / 240) * PX * 0.6;
+      const k = Math.min(1, d / 240) * PX * 0.9;
       eyes.style.transform = `translate(${((dx / d) * k).toFixed(2)}px,${((dy / d) * k).toFixed(2)}px)`;
       setDozing(false);
       window.clearTimeout(sleepTimer);
@@ -86,23 +58,7 @@ export function StationCat({ rushKey }: { rushKey: number }) {
       {talk && <span className="cat-say">{talk}</span>}
       {asleep && !talk && <span className="cat-zzz" aria-hidden>z</span>}
       <button className="cat-hit" onClick={poke} aria-label={`${CAT_NAME}, the station cat`}>
-        <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} shapeRendering="crispEdges" aria-hidden>
-          <g className="cat-tail">
-            {TAIL.map((c) => <rect key={`t${c.x}-${c.y}`} x={c.x * PX} y={c.y * PX} width={PX} height={PX} />)}
-          </g>
-          <g className="cat-fur">
-            {CREAM.map((c) => <rect key={`c${c.x}-${c.y}`} x={c.x * PX} y={c.y * PX} width={PX} height={PX} />)}
-          </g>
-          <g className="cat-mask">
-            {MASK.map((c) => <rect key={`m${c.x}-${c.y}`} x={c.x * PX} y={c.y * PX} width={PX} height={PX} />)}
-            {NOSE.map((c) => <rect key={`n${c.x}-${c.y}`} className="cat-nose" x={c.x * PX} y={c.y * PX} width={PX} height={PX} />)}
-          </g>
-          <g ref={eyesRef} className="cat-look">
-            <g className="cat-eyes">
-              {EYES.map((c) => <rect key={`e${c.x}-${c.y}`} x={c.x * PX} y={c.y * PX} width={PX} height={PX} />)}
-            </g>
-          </g>
-        </svg>
+        <MochiSprite px={PX} eyesRef={eyesRef} />
       </button>
     </div>
   );

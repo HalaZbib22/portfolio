@@ -1,5 +1,5 @@
 export type Light = "ok" | "warn" | "down";
-export type ThemeId = "night" | "day" | "warehouse" | "dispatch" | "maintenance";
+export type ThemeId = "night" | "day" | "warehouse" | "dispatch" | "maintenance" | "cold";
 
 export const HERO = "HALA ZBIB";
 export const FLAP = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#/·";
@@ -14,11 +14,12 @@ export const BIO =
 
 
 export const THEMES: { id: ThemeId; name: string; dot: string }[] = [
-  { id: "night", name: "night shift", dot: "#5CE1E6" },
+  { id: "night", name: "night shift", dot: "#FF7AB8" },
   { id: "day", name: "day shift", dot: "#FFD166" },
   { id: "warehouse", name: "warehouse", dot: "#5CFF8F" },
   { id: "dispatch", name: "dispatch", dot: "#FFB454" },
-  { id: "maintenance", name: "maintenance", dot: "#F06BD8" },
+  { id: "maintenance", name: "maintenance", dot: "#B48CFF" },
+  { id: "cold", name: "cold storage", dot: "#5CE1E6" },
 ];
 
 export const NAV: { num: string; label: string; id: string }[] = [

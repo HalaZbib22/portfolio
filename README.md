@@ -19,11 +19,11 @@ npm run lint
 | --- | --- |
 | `1`–`5` | jump to a section |
 | `j` / `k` | scroll down / up |
-| `t` | cycle theme (night shift → day shift → warehouse → dispatch → maintenance) |
+| `t` | cycle theme (night shift → day shift → warehouse → dispatch → maintenance → cold storage) |
 | `b` | toggle board mode (kiosk density) |
 | `?` | help overlay |
 | `esc` | collapse service detail / close help |
-| hover | the floor of the live tile: the laser dot follows the pointer and Mochi hunts it |
+| feed / play / nap / clean | Mochi is a tamagotchi; stats decay in real time and persist per browser |
 
 There is one easter egg. The help overlay hints at it.
 
@@ -38,6 +38,7 @@ src/components/*          TopBar · StatusBar · Panel · Operator (hero) · Liv
 src/hooks/useFlip         FLIP layout transition (320ms, 30ms stagger)
 src/hooks/useSplitFlap    hero split-flap resolve (lands under 1.3s, runs once)
 src/hooks/useMedia        reduced-motion and theme stores (useSyncExternalStore)
+src/lib/pet.ts            the tamagotchi model: decay, actions, mood, localStorage store
 ```
 
 ## Editing content

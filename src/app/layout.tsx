@@ -1,9 +1,10 @@
 import type { Metadata, Viewport } from "next";
-import { IBM_Plex_Mono, Space_Grotesk } from "next/font/google";
+import { IBM_Plex_Mono, Press_Start_2P, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 
 const mono = IBM_Plex_Mono({ variable: "--font-mono", subsets: ["latin"], weight: ["400", "500", "600"], display: "swap" });
 const grot = Space_Grotesk({ variable: "--font-grot", subsets: ["latin"], weight: ["400", "500"], display: "swap" });
+const arcade = Press_Start_2P({ variable: "--font-arcade", subsets: ["latin"], weight: "400", display: "swap" });
 
 export const metadata: Metadata = {
   title: "Hala Zbib — Senior Full-Stack Engineer",
@@ -23,7 +24,7 @@ const themeScript = `try{var t=localStorage.getItem('hz-theme');if(t)document.do
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${mono.variable} ${grot.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${mono.variable} ${grot.variable} ${arcade.variable}`} suppressHydrationWarning>
       <body>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         {children}

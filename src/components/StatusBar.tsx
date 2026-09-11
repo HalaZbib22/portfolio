@@ -2,11 +2,13 @@
 
 import type { Ref } from "react";
 import { NAV } from "@/lib/content";
+import { StationCat } from "./StationCat";
 
-export function StatusBar({ active, coordRef }: { active: number; coordRef: Ref<HTMLDivElement> }) {
+export function StatusBar({ active, coordRef, rushKey }: { active: number; coordRef: Ref<HTMLDivElement>; rushKey: number }) {
   const n = NAV[active];
   return (
     <div className="statusbar" role="status">
+      <StationCat rushKey={rushKey} />
       <div className="sec">
         <span className="light" data-light="ok" />
         SEC {n.num}

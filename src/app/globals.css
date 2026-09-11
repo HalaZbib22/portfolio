@@ -337,3 +337,33 @@ kbd { font: inherit; border: 1px solid var(--line-strong); padding: 1px 5px; col
   .root * { animation-duration: 1ms !important; transition-duration: 150ms !important; transition-delay: 0ms !important; }
 }
 .root[data-rm="true"] * { animation-duration: 1ms !important; transition-duration: 150ms !important; transition-delay: 0ms !important; }
+
+/* ── station cat (sits on the status bar; with the live tile, the only thing that loops) ─ */
+.cat { position: absolute; left: 196px; bottom: 100%; z-index: 21; line-height: 0; pointer-events: none; }
+.cat-hit { pointer-events: auto; display: block; line-height: 0; cursor: pointer; }
+.cat-hit:focus-visible { outline-offset: 4px; }
+.cat-fur rect { fill: var(--fg-1); transition: fill var(--t-theme); }
+.cat-nose { fill: var(--accent-2) !important; }
+.cat-tail rect { fill: var(--fg-1); transition: fill var(--t-theme); }
+.cat-eyes rect { fill: var(--accent); }
+.cat-look { transition: transform var(--t-hover) var(--ease); }
+.cat-eyes { transform-origin: 50% 11px; animation: cat-blink 5.2s steps(1) infinite; }
+.cat-tail { transform-origin: 39px 33px; animation: cat-sway 3.2s ease-in-out infinite; }
+.cat[data-mood="asleep"] .cat-eyes { animation: none; transform: scaleY(0.34); }
+.cat[data-mood="asleep"] .cat-tail { animation-duration: 6.4s; }
+.cat[data-mood="alert"] .cat-eyes rect { fill: var(--warn); }
+.cat[data-mood="alert"] .cat-eyes { animation: none; }
+.cat[data-mood="alert"] .cat-tail { animation-duration: 0.9s; }
+.cat[data-mood="alert"] .cat-fur rect { fill: var(--fg-0); }
+.cat-say, .cat-zzz {
+  position: absolute; left: 100%; bottom: 100%; margin: 0 0 -10px 2px; white-space: nowrap;
+  font-size: 10px; letter-spacing: 0.08em; color: var(--accent-2); border: 1px solid var(--line-strong); background: var(--bg-2); padding: 1px 5px;
+  animation: online 160ms var(--ease) backwards;
+}
+.cat-zzz { border: 0; background: none; color: var(--fg-2); animation: cat-zzz 2.4s ease-in-out infinite; }
+@keyframes cat-blink { 0%, 93%, 100% { transform: scaleY(1); } 94%, 98% { transform: scaleY(0.2); } }
+@keyframes cat-sway { 0%, 100% { transform: rotate(-8deg); } 50% { transform: rotate(8deg); } }
+@keyframes cat-zzz { 0% { opacity: 0; transform: translateY(2px); } 30%, 70% { opacity: 1; } 100% { opacity: 0; transform: translateY(-6px); } }
+@media (max-width: 720px) { .root .cat { left: 100px; } }
+@media (prefers-reduced-motion: reduce) { .cat-eyes, .cat-tail, .cat-zzz { animation: none !important; } }
+.root[data-rm="true"] .cat-eyes, .root[data-rm="true"] .cat-tail, .root[data-rm="true"] .cat-zzz { animation: none !important; }

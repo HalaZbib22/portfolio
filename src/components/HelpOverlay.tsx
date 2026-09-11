@@ -13,6 +13,7 @@ export function HelpOverlay({ onClose }: { onClose: () => void }) {
           <kbd>b</kbd><span>toggle board mode (kiosk density)</span>
           <kbd>esc</kbd><span>collapse service detail / close this</span>
           <kbd>drag</kbd><span>the driver dot re-routes to the nearest street</span>
+          <kbd>click</kbd><span>the cat on the bottom rail. she watches the cursor and naps when you stop moving</span>
         </div>
         <div className="egg">
           <b>▲ dispatch command</b> · the board listens for one four-letter word every warehouse dreads on a friday evening. type it anywhere.

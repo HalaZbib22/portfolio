@@ -129,7 +129,7 @@ export default function Console() {
           <span>built in next.js · hand-rolled flip · no component library · <span className="k">press ? for help</span></span>
         </footer>
       </main>
-      <StatusBar active={active} coordRef={coordRef} />
+      <StatusBar active={active} coordRef={coordRef} rushKey={rushKey} />
       {help && <HelpOverlay onClose={() => setHelp(false)} />}
     </div>
   );

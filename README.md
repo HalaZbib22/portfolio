@@ -1,6 +1,6 @@
 # HZ·SYS — Hala Zbib's portfolio
 
-A personal portfolio built as a retro console: panels with tabs, a status bar, six themes, and a tamagotchi of my cat. Sections are PLAYER (about), CAMPAIGN (work history), SHIPPED (projects), SKILL TREE, and ACHIEVEMENTS (education).
+A personal portfolio built as a retro console: panels with tabs, a status bar, six themes, and a tamagotchi of my cat. Sections are PLAYER (about), STORY MODE (work history), SHIPPED (projects), SKILL TREE, and ACHIEVEMENTS (education).
 
 Next.js App Router, TypeScript, plain CSS variables. No component library, no animation library: the layout transitions are a hand-rolled FLIP on the Web Animations API.
 

@@ -27,7 +27,7 @@ export const THEMES: { id: ThemeId; name: string; dot: string }[] = [
 
 export const NAV: { num: string; label: string; id: string }[] = [
   { num: "01", label: "PLAYER", id: "s1" },
-  { num: "02", label: "CAMPAIGN", id: "s2" },
+  { num: "02", label: "STORY MODE", id: "s2" },
   { num: "03", label: "SHIPPED", id: "s3" },
   { num: "04", label: "SKILL TREE", id: "s4" },
   { num: "05", label: "ACHIEVEMENTS", id: "s5" },

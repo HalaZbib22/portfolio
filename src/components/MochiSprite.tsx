@@ -36,44 +36,64 @@ const HALF = [
   "....xxxxxxxxxxx",
   "......xxxxxxxxx",
 ];
-const TAIL_CELLS: Record<number, number[]> = {22: [24, 25, 26], 21: [25, 26, 27], 20: [26, 27, 28], 19: [27, 28, 29], 18: [28, 29, 30], 17: [29, 30, 31], 16: [30, 31, 32], 15: [31, 32, 33], 14: [32, 33], 13: [31, 32, 33]};
-export const MOCHI_W = 35;
+/* Two tail frames (a curl, and a flick to the right); pixel tails are frame-swapped, never rotated. Row 12/15 tips are darker. */
+const TAIL_FRAMES: Record<"a" | "b", Record<number, number[]>> = {
+  a: { 22: [24, 25, 26, 27], 21: [26, 27, 28, 29], 20: [28, 29, 30], 19: [29, 30, 31], 18: [30, 31, 32], 17: [30, 31, 32], 16: [31, 32, 33], 15: [31, 32, 33], 14: [31, 32, 33], 13: [30, 31, 32], 12: [29, 30, 31] },
+  b: { 22: [24, 25, 26, 27], 21: [26, 27, 28, 29], 20: [28, 29, 30, 31], 19: [30, 31, 32], 18: [31, 32, 33], 17: [32, 33, 34], 16: [32, 33, 34], 15: [32, 33, 34] },
+};
+const TIP_ROW = { a: 12, b: 15 } as const;
+export const MOCHI_W = 36;
 export const MOCHI_H = HALF.length;
-const BODY = new Set("csmdpeknt");
+const BODY = new Set("csmdpekn");
+const N4 = [[1, 0], [-1, 0], [0, 1], [0, -1]];
 
-function build(): string[] {
-  const rows = HALF.map((h) => [...(h + [...h].reverse().join("") + ".....")]);
-  for (const [y, xs] of Object.entries(TAIL_CELLS)) for (const x of xs) rows[+y][x] = +y === 13 ? "d" : "t";
+type Cell = { x: number; y: number };
+type Frame = { fill: Cell[]; tip: Cell[]; line: Cell[] };
+
+/** Body rows: left half mirrored, then the outline derived from any empty cell touching a body cell. */
+function buildBody(): string[] {
+  const rows = HALF.map((h) => [...(h + [...h].reverse().join("") + "......")]);
   const out = rows.map((r) => [...r]);
   rows.forEach((r, y) =>
     r.forEach((ch, x) => {
       if (ch !== ".") return;
-      for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
-        const n = rows[y + dy]?.[x + dx];
-        if (n && BODY.has(n)) { out[y][x] = "o"; return; }
-      }
+      if (N4.some(([dx, dy]) => BODY.has(rows[y + dy]?.[x + dx] ?? "."))) out[y][x] = "o";
     }),
   );
   return out.map((r) => r.join(""));
 }
-export const MOCHI = build();
+export const MOCHI = buildBody();
 
-type Cell = { x: number; y: number };
-const cells = (...chars: string[]): Cell[] =>
+/** A tail frame: its cells, its darker tip, and its own outline (empty cells around it that the body doesn't already own). */
+function buildTail(frame: "a" | "b"): Frame {
+  const cells = Object.entries(TAIL_FRAMES[frame]).flatMap(([y, xs]) => xs.map((x) => ({ x, y: +y })));
+  const key = (c: Cell) => `${c.x},${c.y}`;
+  const own = new Set(cells.map(key));
+  const line = new Map<string, Cell>();
+  for (const c of cells)
+    for (const [dx, dy] of N4) {
+      const n = { x: c.x + dx, y: c.y + dy };
+      if (own.has(key(n))) continue;
+      if ((MOCHI[n.y]?.[n.x] ?? ".") === ".") line.set(key(n), n);
+    }
+  return { fill: cells.filter((c) => c.y !== TIP_ROW[frame]), tip: cells.filter((c) => c.y === TIP_ROW[frame]), line: [...line.values()] };
+}
+const TAILS = { a: buildTail("a"), b: buildTail("b") };
+
+const cellsOf = (...chars: string[]): Cell[] =>
   MOCHI.flatMap((row, y) => [...row].map((c, x) => (chars.includes(c) ? { x, y } : null)).filter((c): c is Cell => c !== null));
 const LAYERS: [string, Cell[]][] = [
-  ["cat-shadow", cells("x")],
-  ["cat-fur", cells("c")],
-  ["cat-shade", cells("s")],
-  ["cat-mid", cells("m")],
-  ["cat-dark", cells("d")],
-  ["cat-pink", cells("p")],
-  ["cat-nose", cells("n")],
-  ["cat-line", cells("o", "w")],
+  ["cat-shadow", cellsOf("x")],
+  ["cat-fur", cellsOf("c")],
+  ["cat-shade", cellsOf("s")],
+  ["cat-mid", cellsOf("m")],
+  ["cat-dark", cellsOf("d")],
+  ["cat-pink", cellsOf("p")],
+  ["cat-nose", cellsOf("n")],
+  ["cat-line", cellsOf("o", "w")],
 ];
-const EYES = cells("e");
-const PUPILS = cells("k");
-const TAIL = cells("t");
+const EYES = cellsOf("e");
+const PUPILS = cellsOf("k");
 
 type Props = { px?: number; eyesRef?: React.Ref<SVGGElement>; className?: string };
 
@@ -86,7 +106,13 @@ export function MochiSprite({ px = 3, eyesRef, className }: Props) {
   return (
     <svg className={className} width={w} height={h} viewBox={`0 0 ${w} ${h}`} shapeRendering="crispEdges" aria-hidden>
       {LAYERS.slice(0, 1).map(([cls, list]) => <g key={cls} className={cls}>{rects(list, cls)}</g>)}
-      <g className="cat-tail" style={{ transformOrigin: `${25 * px}px ${22 * px}px` }}>{rects(TAIL, "t")}</g>
+      {(["a", "b"] as const).map((f) => (
+        <g key={f} className="cat-tail" data-frame={f}>
+          <g className="cat-line">{rects(TAILS[f].line, `tl${f}`)}</g>
+          <g className="cat-tailfur">{rects(TAILS[f].fill, `t${f}`)}</g>
+          <g className="cat-dark">{rects(TAILS[f].tip, `tt${f}`)}</g>
+        </g>
+      ))}
       {LAYERS.slice(1).map(([cls, list]) => <g key={cls} className={cls}>{rects(list, cls)}</g>)}
       <g ref={eyesRef} className="cat-look">
         <g className="cat-eyes" style={{ transformOrigin: `50% ${9 * px}px` }}>{rects(EYES, "e")}<g className="cat-pupil">{rects(PUPILS, "k")}</g></g>

@@ -23,7 +23,7 @@ npm run lint
 | `b` | toggle board mode (kiosk density) |
 | `?` | help overlay |
 | `esc` | collapse service detail / close help |
-| feed / play / nap / clean | Mochi is a tamagotchi; stats decay in real time and persist per browser |
+| A / B / C | Mochi is a tamagotchi: click the device once, then A selects an icon, B confirms, C cancels (← → ↵ ⌫ too). Stats decay in real time and persist per browser |
 
 There is one easter egg. The help overlay hints at it.
 

@@ -6,6 +6,9 @@ export const FLAP = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#/·";
 
 /** The station cat that sits on the status bar. Rename freely. */
 export const CAT_NAME = "MOCHI";
+/** Adopted 10 Apr 2024 at roughly six to eight weeks old, so born around late February 2024. */
+export const CAT_BIRTHDAY = "2024-02-25";
+export const CAT_ADOPTED = "10 APR 2024";
 
 export const TITLE_LINE = ["frontend engineer with a design habit", "react / next.js", ".net on the side"];
 
@@ -14,11 +17,11 @@ export const BIO =
 
 
 export const THEMES: { id: ThemeId; name: string; dot: string }[] = [
-  { id: "night", name: "night shift", dot: "#FF7AB8" },
+  { id: "night", name: "night shift", dot: "#B48CFF" },
   { id: "day", name: "day shift", dot: "#FFD166" },
   { id: "warehouse", name: "warehouse", dot: "#5CFF8F" },
   { id: "dispatch", name: "dispatch", dot: "#FFB454" },
-  { id: "maintenance", name: "maintenance", dot: "#B48CFF" },
+  { id: "maintenance", name: "maintenance", dot: "#FF7AB8" },
   { id: "cold", name: "cold storage", dot: "#5CE1E6" },
 ];
 

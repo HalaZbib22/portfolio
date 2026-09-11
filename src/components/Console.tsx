@@ -56,7 +56,7 @@ export default function Console() {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const tag = (e.target as HTMLElement | null)?.tagName ?? "";
-      if (/INPUT|TEXTAREA|SELECT/.test(tag) || e.metaKey || e.ctrlKey || e.altKey) return;
+      if (e.defaultPrevented || /INPUT|TEXTAREA|SELECT/.test(tag) || e.metaKey || e.ctrlKey || e.altKey) return; // the Mochi device claims its keys first
       const k = e.key;
       if (k >= "1" && k <= "5") { jump(+k - 1); return; }
       if (k === "j") window.scrollBy({ top: 120, behavior: "smooth" });

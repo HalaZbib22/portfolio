@@ -1,7 +1,7 @@
 /** Tiny pixel sprites for the LCD: rows of characters, each character mapped to a CSS class on its <rect>. */
 type Props = { rows: string[]; classes: Record<string, string>; px?: number; className?: string };
 
-export function PixelArt({ rows, classes, px = 3, className }: Props) {
+export function PixelArt({ rows, classes, px = 2, className }: Props) {
   const w = rows[0].length * px;
   const h = rows.length * px;
   return (
@@ -15,7 +15,33 @@ export function PixelArt({ rows, classes, px = 3, className }: Props) {
   );
 }
 
-/* A wind-up mouse, facing left: g body · k the key on top · e eye · n nose · t tail. */
+/* Monochrome LCD glyphs: # = dark pixel. */
+export const INK = { "#": "ink" };
+
+/* 8×8 icon bar, in the order of the original device: feed, light, play, clean · meter, meds, and the attention bell. */
+export const ICONS: Record<string, string[]> = {
+  feed:  ["........", "..####..", ".######.", "########", ".#....#.", ".######.", "..####..", "........"],
+  light: ["...##...", "..####..", ".######.", ".######.", "..####..", "..#..#..", "..####..", "...##..."],
+  play:  ["..####..", ".#.##.#.", "#..##..#", "########", "#..##..#", ".#.##.#.", "..####..", "........"],
+  clean: [".......#", "......#.", ".....#..", "....#...", ".####...", "####....", "###.....", "##......"],
+  meter: ["......##", "......##", "...##.##", "...##.##", "##.##.##", "##.##.##", "##.##.##", "########"],
+  meds:  [".....###", "....#..#", "...#...#", "..#...#.", ".#..#.#.", "#...#...", "#....#..", "####...."],
+  bell:  ["...##...", "..####..", ".######.", ".######.", ".######.", "########", "...##...", "........"],
+};
+
+/* The floor decorations. */
+export const POOP = ["...#....", "..##....", ".####...", "..###...", ".#####..", "#######.", "########", "........"];
+export const BOWL: string[][] = [
+  ["........", ".######.", "########", "########", ".######.", "..####..", "........", "........"], // full
+  ["........", "........", "..####..", "########", ".######.", "..####..", "........", "........"], // half
+  ["........", "........", "........", "########", ".######.", "..####..", "........", "........"], // empty
+];
+export const HEART_FULL = [".##.##.", "#######", "#######", ".#####.", "..###..", "...#..."];
+export const HEART_EMPTY = [".##.##.", "#.#.#.#", "#.....#", ".#...#.", "..#.#..", "...#..."];
+export const ZZZ = ["####", "..#.", ".#..", "####"];
+export const SKULL = ["..####..", ".######.", "##.##.##", "########", ".######.", "..#.#...", "..####..", "........"];
+
+/* Toys, in colour: a wind-up mouse (g body · k key · e eye · n nose · t tail) and a yarn ball (y · Y lighter strand · s loose end). */
 export const MOUSE = [
   "......kkk...",
   ".......k....",
@@ -27,8 +53,6 @@ export const MOUSE = [
   "..gg..gg.tt.",
 ];
 export const MOUSE_CLASSES = { g: "toy-body", k: "toy-key", e: "toy-eye", n: "toy-nose", t: "toy-tail" };
-
-/* A ball of yarn: y yarn · Y a lighter strand · s the loose end. */
 export const YARN = [
   "..yyyy..",
   ".yyYyyy.",

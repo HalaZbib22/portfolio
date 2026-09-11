@@ -4,22 +4,23 @@ import { useEffect, useRef, useState } from "react";
 import { CAT_NAME } from "@/lib/content";
 
 /*
- * Pixel grid, 16 × 12. x = fur, e = eye, n = nose, t = tail (own group so it can sway).
- * Eyes and tail are rendered separately so they can be animated without touching the body.
+ * Pixel grid, 18 × 13, drawn from photos of the real Mochi (a lynx-point):
+ * c = cream fur, m = taupe mask / ears / forehead stripes, e = blue eye, n = pink nose, t = tail (darker tip, own group so it can sway).
  */
 const SPRITE = [
-  "..x.......x.....",
-  "..xx.....xx.....",
-  "..xxxxxxxxx.....",
-  "..xexxxxxex.....",
-  "..xxxxnxxxx.....",
-  "...xxxxxxx......",
-  "..xxxxxxxxx.....",
-  ".xxxxxxxxxxx....",
-  ".xxxxxxxxxxx..t.",
-  ".xxxxxxxxxxx.tt.",
-  ".xxxxxxxxxxxtt..",
-  ".xx.xx...xx.xx..",
+  "...m.........m....",
+  "...mm.......mm....",
+  "...mmcccccccmm....",
+  "..cmcmccmccmcmc...",
+  "..cccceccccecccc..",
+  "..ccmmcccnccmmcc..",
+  "...cccccmcccccc...",
+  "..cccccccccccccc..",
+  ".cccccccccccccccc.",
+  ".ccccccccccccccccc",
+  ".cccccccccccccctt.",
+  ".ccccccccccccctt..",
+  ".cc.ccc.....ccc.c.",
 ];
 const PX = 3;
 const W = SPRITE[0].length * PX;
@@ -28,7 +29,8 @@ const H = SPRITE.length * PX;
 type Cell = { x: number; y: number };
 const cells = (ch: string): Cell[] =>
   SPRITE.flatMap((row, y) => [...row].map((c, x) => (c === ch ? { x, y } : null)).filter((c): c is Cell => c !== null));
-const FUR = cells("x");
+const CREAM = cells("c");
+const MASK = cells("m");
 const EYES = cells("e");
 const NOSE = cells("n");
 const TAIL = cells("t");
@@ -90,7 +92,10 @@ export function StationCat({ rushKey }: { rushKey: number }) {
             {TAIL.map((c) => <rect key={`t${c.x}-${c.y}`} x={c.x * PX} y={c.y * PX} width={PX} height={PX} />)}
           </g>
           <g className="cat-fur">
-            {FUR.map((c) => <rect key={`f${c.x}-${c.y}`} x={c.x * PX} y={c.y * PX} width={PX} height={PX} />)}
+            {CREAM.map((c) => <rect key={`c${c.x}-${c.y}`} x={c.x * PX} y={c.y * PX} width={PX} height={PX} />)}
+          </g>
+          <g className="cat-mask">
+            {MASK.map((c) => <rect key={`m${c.x}-${c.y}`} x={c.x * PX} y={c.y * PX} width={PX} height={PX} />)}
             {NOSE.map((c) => <rect key={`n${c.x}-${c.y}`} className="cat-nose" x={c.x * PX} y={c.y * PX} width={PX} height={PX} />)}
           </g>
           <g ref={eyesRef} className="cat-look">

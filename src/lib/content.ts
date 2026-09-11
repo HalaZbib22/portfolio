@@ -102,6 +102,9 @@ export type Project = {
   linkLabel?: string;
   embed?: string;
   embedNote?: string;
+  /** A second link when the repo is public but the running instance is gated. */
+  live?: string;
+  liveNote?: string;
   tele: string;
   arch: string[];
   problem: string;
@@ -165,12 +168,14 @@ export const PROJECTS: Project[] = [
     size: "design system",
     href: "https://github.com/HalaZbib22/support-shifts",
     linkLabel: "github ↗",
+    live: "https://shift-management-tool-murex.vercel.app",
+    liveNote: "koein work email required",
     tele: "seat grammar · firestore transactions · ics feeds · oklch dark mode",
     arch: ["Week board", "Seat grammar", "Firestore txn", "ICS feed", "Admin / payouts"],
     problem: "Out-of-hours support was a spreadsheet: nobody could see who held which seat, swaps were chat messages, and someone always ended up with five weekends.",
     built:
       "A week board that reads like a wall calendar with a strict seat grammar (open-and-yours is the only call to action), a fairness strip per person, a shift drawer with handover notes, same-role swaps applied in one Firestore transaction, Draft → Published → Locked weeks, payouts with CSV export, and a private calendar subscription URL per person. Light and dark palettes defined in the same OKLCH space so every seat label clears 4.5:1 in both.",
-    result: "The Industry design system (steel-blue wireframe, Barlow Condensed, registration marks) is defined once as CSS custom properties; switching modes is one attribute on <html> with no light flash.",
+    result: "In use by the Koein dev team (the live instance is behind Google sign-in with a work email). The Industry design system (steel-blue wireframe, Barlow Condensed, registration marks) is defined once as CSS custom properties; switching modes is one attribute on <html> with no light flash.",
   },
   {
     id: "rt",
@@ -211,19 +216,21 @@ export const PROJECTS: Project[] = [
   {
     id: "ce",
     glyph: "CE",
-    name: "CardElla",
+    name: "CardElla portal",
     status: "shipped · endspace",
     light: "ok",
-    desc: "A responsive digital business-card service: one link that replaces the paper card, built with Next.js and MUI.",
+    desc: "The card-management portal behind Cardella, a digital business card and QR code platform: build the card, manage it, share it by tap or scan. Responsive, Next.js and MUI.",
     stack: "next.js · mui",
     uptime: "shipped",
-    role: "frontend",
+    role: "frontend · portal",
     size: "2022 – 2024",
-    tele: "responsive · next.js · mui",
-    arch: ["Card editor", "Next.js", "Public card page"],
+    href: "https://cardella.io",
+    linkLabel: "cardella.io ↗",
+    tele: "portal only · the marketing site is not mine",
+    arch: ["Card editor", "Portal (Next.js)", "Public card / QR"],
     problem: "Paper business cards get lost, go stale, and can't be updated after they're handed out.",
-    built: "A responsive digital business-card service on Next.js and MUI: a card that lives at a link and updates in place.",
-    result: "Delivered as a client product at Endspace MENA.",
+    built: "The responsive portal where users create and manage their digital cards, on Next.js and MUI, against the partner backend.",
+    result: "Delivered as a client product at Endspace MENA. The public site at cardella.io is the client's; my work is the portal behind it.",
   },
   {
     id: "bg",
@@ -246,13 +253,15 @@ export const PROJECTS: Project[] = [
     id: "vs",
     glyph: "VS",
     name: "Velvet Services",
-    status: "shipped · endspace",
+    status: "live · endspace",
     light: "ok",
     desc: "Public website plus internal operations software for a commercial cleaning company.",
     stack: "react · next.js",
-    uptime: "shipped",
+    uptime: "live",
     role: "frontend",
     size: "web + ops",
+    href: "https://www.velvetservices.net",
+    linkLabel: "velvetservices.net ↗",
     tele: "public site · internal ops tooling",
     arch: ["Public site", "Ops software", "Partner backend"],
     problem: "A commercial cleaning company running day-to-day operations without software built for it.",
@@ -272,7 +281,7 @@ const raw: [string, ...string[]][] = [
   ["real-time & maps", "signalr|orders · tv board", "socket.io|sidelick", "websockets|4+ yrs", "fcm|push", "web push|sidelick", "google maps|live order map", "mapbox gl|driver map"],
   ["devops", "github actions|scanner · quality gate", "vercel|this site · seat map", "docker|basics · picker portal dockerfile", "aws|basics", "sentry|errors"],
   ["practice", "application security|idor · supply-chain · uploads", "performance profiling|tv board", "code review & standards|3 repos", "agile / scrum|4+ yrs"],
-  ["interests", "real-time systems|", "operational uis|", "applied ai|zaka ai", "dogs|see sidelick"],
+  ["interests", "real-time systems|", "operational uis|", "applied ai|zaka ai", "cats|mochi · she is on the bottom rail"],
 ];
 export const GROUPS: SkillGroup[] = raw.map(([name, ...items]) => ({
   name,

@@ -43,6 +43,11 @@ function ServiceCard({ p, open, onToggle }: { p: Project; open: boolean; onToggl
         <a className="btn-ghost" href={p.href ?? CONTACT.linkedin} target="_blank" rel="noreferrer" onClick={stop}>
           {p.linkLabel ?? "production · private"}
         </a>
+        {p.live && (
+          <a className="btn-ghost" href={p.live} target="_blank" rel="noreferrer" onClick={stop} title={p.liveNote}>
+            live · {p.liveNote ?? "gated"} ↗
+          </a>
+        )}
       </div>
       {open && (
         <div className="detail">

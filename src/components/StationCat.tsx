@@ -4,23 +4,22 @@ import { useEffect, useRef, useState } from "react";
 import { CAT_NAME } from "@/lib/content";
 
 /*
- * Pixel grid, 18 × 13, drawn from photos of the real Mochi (a lynx-point):
- * c = cream fur, m = taupe mask / ears / forehead stripes, e = blue eye, n = pink nose, t = tail (darker tip, own group so it can sway).
+ * Pixel grid, 16 × 12: the original character, in Mochi's colours.
+ * c = cream fur, m = taupe (ears, tail tip), e = blue eye, n = pink nose, t = tail (own group so it can sway).
  */
 const SPRITE = [
-  "...m.........m....",
-  "...mm.......mm....",
-  "...mmcccccccmm....",
-  "..cmcmccmccmcmc...",
-  "..cccceccccecccc..",
-  "..ccmmcccnccmmcc..",
-  "...cccccmcccccc...",
-  "..cccccccccccccc..",
-  ".cccccccccccccccc.",
-  ".ccccccccccccccccc",
-  ".cccccccccccccctt.",
-  ".ccccccccccccctt..",
-  ".cc.ccc.....ccc.c.",
+  "..m.......m.....",
+  "..mm.....mm.....",
+  "..cmcccccmc.....",
+  "..cecccccec.....",
+  "..ccccnccccc....",
+  "...ccccccc......",
+  "..ccccccccc.....",
+  ".ccccccccccc....",
+  ".ccccccccccc..t.",
+  ".ccccccccccc.tt.",
+  ".ccccccccccctt..",
+  ".cc.cc...cc.cc..",
 ];
 const PX = 3;
 const W = SPRITE[0].length * PX;

@@ -350,8 +350,8 @@ kbd { font: inherit; border: 1px solid var(--line-strong); padding: 1px 5px; col
 .cat-tail rect { fill: var(--mochi-mask); }
 .cat-eyes rect { fill: var(--mochi-eye); }
 .cat-look { transition: transform var(--t-hover) var(--ease); }
-.cat-eyes { transform-origin: 50% 13.5px; animation: cat-blink 5.2s steps(1) infinite; }
-.cat-tail { transform-origin: 45px 36px; animation: cat-sway 3.2s ease-in-out infinite; }
+.cat-eyes { transform-origin: 50% 11px; animation: cat-blink 5.2s steps(1) infinite; }
+.cat-tail { transform-origin: 39px 33px; animation: cat-sway 3.2s ease-in-out infinite; }
 .cat[data-mood="asleep"] .cat-eyes { animation: none; transform: scaleY(0.34); }
 .cat[data-mood="asleep"] .cat-tail { animation-duration: 6.4s; }
 .cat[data-mood="alert"] .cat-eyes { animation: none; transform: scaleY(1.3); }

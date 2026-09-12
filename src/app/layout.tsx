@@ -7,7 +7,7 @@ const grot = Space_Grotesk({ variable: "--font-grot", subsets: ["latin"], weight
 const arcade = Press_Start_2P({ variable: "--font-arcade", subsets: ["latin"], weight: "400", display: "swap" });
 
 export const metadata: Metadata = {
-  title: "Hala Zbib — Senior Full-Stack Engineer",
+  title: "Hala Zbib", // the tab; the link preview below keeps the role
   description:
     "Senior full-stack engineer in Beirut. React / Next.js / TypeScript / .NET. Real-time, data-dense UIs with a design habit, and a pixel cat you can feed.",
   openGraph: {

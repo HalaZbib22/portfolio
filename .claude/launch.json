@@ -3,9 +3,7 @@
   "configurations": [
     {
       "name": "portfolio",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev", "--", "--port", "3111"],
-      "port": 3111
+      "url": "http://localhost:3000"
     }
   ]
 }

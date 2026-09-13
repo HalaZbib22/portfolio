@@ -16,7 +16,7 @@ export function HelpOverlay({ onClose }: { onClose: () => void }) {
           <kbd>click</kbd><span>the cat on the bottom rail. she watches the cursor and naps when you stop moving</span>
         </div>
         <div className="egg">
-          <b>▲ cheat code</b> · the console listens for one five-letter name. type it anywhere for zoomies.
+          <b>▲ cheat codes</b> · the console listens for her five-letter name (zoomies) and for the word a new cat would be (start over).
         </div>
       </div>
     </div>

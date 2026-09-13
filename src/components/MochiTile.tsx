@@ -6,7 +6,7 @@ import { MochiSprite } from "./MochiSprite";
 import { BOWL, HEART_EMPTY, HEART_FULL, ICONS, INK, MOUSE, MOUSE_CLASSES, PixelArt, POOP, SKULL, YARN, YARN_CLASSES, ZZZ } from "./PixelArt";
 import { CAT_ADOPTED, CAT_BIRTHDAY, CAT_NAME, type Light } from "@/lib/content";
 import {
-  age, canPlay, clean, feed, hearts, light, meds, mood, needs, playResult, readPet, serverPet, subscribePet, tenure, tick, updatePet,
+  age, canPlay, clean, feed, fresh, hearts, light, meds, mood, needs, playResult, readPet, serverPet, subscribePet, tenure, tick, updatePet,
   zoomies as doZoomies, type Need, type Outcome,
 } from "@/lib/pet";
 
@@ -24,6 +24,9 @@ type LogLine = { t: string; text: string; tone?: "ok" | "warn" | "accent" };
 const pad = (n: number) => String(n).padStart(2, "0");
 const stamp = () => { const d = new Date(); return `${pad(d.getHours())}:${pad(d.getMinutes())}`; };
 const MOOD_LIGHT: Record<string, Light> = { NAPPING: "ok", PURRING: "ok", CONTENT: "ok", HUNGRY: "down", SICK: "down", SLEEPY: "warn", BORED: "warn", MESSY: "warn" };
+/** Captured once per page load, before the first tick, so dev-mode effect re-runs can't erase how long you were gone. */
+let arrival: { away: number; wasSick: boolean; wantFresh: boolean } | null = null;
+
 const NEED_TEXT: Record<Need, string> = { sick: "she is SICK. meds.", hungry: "she is HUNGRY.", poop: "clean the floor.", bored: "she is BORED.", sleepy: "she needs the light off." };
 
 /**
@@ -32,7 +35,7 @@ const NEED_TEXT: Record<Need, string> = { sick: "she is SICK. meds.", hungry: "s
  * and an attention bell. Plus one borrowed Game Boy trick: a typewriter text box for her lines.
  * The model is in lib/pet.ts; this component is the device.
  */
-export function MochiTile({ zoomiesKey }: { zoomiesKey: number }) {
+export function MochiTile({ zoomiesKey, resetKey }: { zoomiesKey: number; resetKey: number }) {
   const pet = useSyncExternalStore(subscribePet, readPet, serverPet);
   const deviceRef = useRef<HTMLDivElement>(null);
   const [sel, setSel] = useState(-1);
@@ -77,18 +80,36 @@ export function MochiTile({ zoomiesKey }: { zoomiesKey: number }) {
 
   // real-time decay, clock, and the first line
   useEffect(() => {
-    const first = readPet();
-    const away = first.born ? Date.now() - first.last : 0;
+    if (!arrival) {
+      const first = readPet();
+      const wantFresh = new URLSearchParams(location.search).get("mochi") === "fresh";
+      arrival = { away: first.born ? Date.now() - first.last : 0, wasSick: first.sick, wantFresh: wantFresh || !first.born };
+      if (wantFresh) updatePet(() => fresh(Date.now()));
+    }
+    const { away, wasSick, wantFresh } = arrival;
     const t0 = window.setTimeout(() => {
-      if (!first.born) { say(`${CAT_NAME} hatched. good luck.`); pushLog(`hatched · ${CAT_NAME.toLowerCase()} is now your problem`, "accent"); }
-      else if (away > 3_600_000) { say(`you were gone ${Math.round(away / 3_600_000)}h.`); pushLog(`you were gone ${Math.round(away / 3_600_000)}h · she noticed`, "warn"); }
+      const hours = Math.round(away / 3_600_000);
+      const days = Math.round(away / 86_400_000);
+      if (wantFresh) { say(`${CAT_NAME} hatched. good luck.`); pushLog(`hatched · ${CAT_NAME.toLowerCase()} is now your problem`, "accent"); }
+      else if (days >= 2) { say(`you were gone ${days} days. she has questions.`); pushLog(`gone ${days} days · the auto-feeder did its job, barely`, "warn"); }
+      else if (hours >= 3) { say(`you were gone ${hours}h.`); pushLog(`gone ${hours}h · she ate, slept, and noticed`, "warn"); }
       else pushLog("resumed · she pretends not to care");
+      if (wasSick && !readPet().sick) pushLog("recovered · on her own, no thanks to you", "ok");
     }, 0);
     const run = () => { const now = Date.now(); updatePet((p) => tick(p, now)); setClock(stamp()); setAgeText(age(now, CAT_BIRTHDAY)); setTenureText(tenure(readPet(), now)); };
     run();
     const iv = window.setInterval(run, TICK_MS);
     return () => { window.clearTimeout(t0); window.clearInterval(iv); };
   }, [say, pushLog]);
+
+  // cheat: a brand-new cat, for demos and screenshots
+  const [seenReset, setSeenReset] = useState(0);
+  useEffect(() => {
+    if (resetKey <= seenReset) return;
+    updatePet(() => fresh(Date.now()));
+    const t = window.setTimeout(() => { setSeenReset(resetKey); say("reset. she remembers nothing. suspicious."); pushLog("reset · a brand-new mochi, same attitude", "accent"); }, 0);
+    return () => window.clearTimeout(t);
+  }, [resetKey, seenReset, say, pushLog]);
 
   // easter egg
   useEffect(() => {

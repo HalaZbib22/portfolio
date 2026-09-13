@@ -24,6 +24,7 @@ export default function Console() {
   const [help, setHelp] = useState(false);
   const [active, setActive] = useState(0);
   const [zoomiesKey, setZoomiesKey] = useState(0);
+  const [resetKey, setResetKey] = useState(0);
   const typed = useRef("");
   const flip = useFlip(rootRef, reduced);
 
@@ -71,6 +72,7 @@ export default function Console() {
       if (/^[a-z]$/.test(k)) {
         typed.current = (typed.current + k).slice(-5);
         if (typed.current === "mochi") { typed.current = ""; setZoomiesKey((n) => n + 1); }
+        if (typed.current === "fresh") { typed.current = ""; setResetKey((n) => n + 1); }
       }
     };
     window.addEventListener("keydown", onKey);
@@ -119,7 +121,7 @@ export default function Console() {
       <TopBar active={active} theme={theme} board={mode === "board"} onJump={jump} onTheme={setTheme} onToggleBoard={toggleMode} />
       <main className="container">
         <Operator reduced={reduced} />
-        <MochiTile zoomiesKey={zoomiesKey} />
+        <MochiTile zoomiesKey={zoomiesKey} resetKey={resetKey} />
         <ShiftLog />
         <Fleet expanded={expanded} onToggle={toggleProject} />
         <Inventory />

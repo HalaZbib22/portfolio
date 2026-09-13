@@ -1,7 +1,9 @@
 /*
  * MOCHI.SYS pet model: a pure state machine plus a tiny localStorage-backed store.
- * Stats are 0–100 and decay in real time, including while the visitor is away (capped at 12 hours),
- * so a returning visitor finds her hungry, not dead. Poop appears on its own; leave it and she gets sick.
+ * Paced for portfolio time, not 1996 pocket time: she needs you a little and punishes you never.
+ * Stats are 20–100 (a floor, so she sulks but never dies), hunger takes about a day and a half to bottom out,
+ * poop shows up once or twice a day, sickness takes days of neglect and clears on its own, and a "while you were
+ * gone" routine tops her up so a returning visitor meets a mildly needy cat, not a disaster.
  */
 export type Pet = {
   food: number;
@@ -11,80 +13,104 @@ export type Pet = {
   poop: number; // piles on the floor, 0–3
   poopAt: number; // epoch ms when the next pile is due
   sick: boolean;
-  sickAt: number; // epoch ms when a mess started counting toward sickness (0 = not counting)
+  sickAt: number; // epoch ms: when a mess started counting toward sickness, or when she fell sick
   weight: number;
   born: number; // epoch ms, 0 = not yet hatched on this browser
   last: number; // epoch ms of the last tick
+  nightKey: string; // local date on which the night routine last ran
+  dayKey: string; // local date on which the morning routine last ran
 };
 export type Mood = "NAPPING" | "SICK" | "HUNGRY" | "SLEEPY" | "BORED" | "MESSY" | "PURRING" | "CONTENT";
 export type Need = "hungry" | "bored" | "sleepy" | "poop" | "sick";
 
 export const KEY = "hz-mochi-pet";
-export const DEFAULT_PET: Pet = { food: 80, energy: 80, fun: 70, asleep: false, poop: 0, poopAt: 0, sick: false, sickAt: 0, weight: 5, born: 0, last: 0 };
+export const DEFAULT_PET: Pet = { food: 85, energy: 85, fun: 75, asleep: false, poop: 0, poopAt: 0, sick: false, sickAt: 0, weight: 5, born: 0, last: 0, nightKey: "", dayKey: "" };
 
-const MAX_AWAY_MS = 12 * 60 * 60 * 1000;
-const POOP_EVERY_MS = 28 * 60 * 1000;
-const SICK_AFTER_MS = 25 * 60 * 1000;
-const clamp = (n: number) => Math.max(0, Math.min(100, n));
+const H = 60 * 60 * 1000;
+const FLOOR = 20;
+const MAX_AWAY_MS = 36 * H; // decay stops accruing after a day and a half away
+const CATCH_UP_AFTER_MS = 3 * H; // longer than this and the auto-feeder has been at work
+const POOP_EVERY_MS = 14 * H;
+const SICK_AFTER_MS = 60 * H; // two or more piles left this long
+const RECOVER_AFTER_MS = 24 * H; // she gets better on her own
+const NIGHT_FROM = 1, NIGHT_TO = 7; // local hours she sleeps on her own
+const clamp = (n: number) => Math.max(FLOOR, Math.min(100, n));
 
-/** Per-minute decay (or recovery) rates. */
+/** Per-minute rates. Awake: full to empty in ~36h (food), ~28h (fun), ~55h (energy). Asleep: energy back in ~5h. */
 const RATE = {
-  awake: { food: -1.5, energy: -1, fun: -2 },
-  asleep: { food: -0.7, energy: 5, fun: -0.5 },
+  awake: { food: -0.046, energy: -0.03, fun: -0.06 },
+  asleep: { food: -0.015, energy: 0.3, fun: -0.02 },
 };
+const dayKey = (d: Date) => `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
 
 export function tick(p: Pet, now: number): Pet {
   if (!p.born) return { ...p, born: now, last: now, poopAt: now + POOP_EVERY_MS };
-  const ms = Math.min(MAX_AWAY_MS, Math.max(0, now - p.last));
-  const mins = ms / 60_000;
+  const away = Math.max(0, now - p.last);
+  const mins = Math.min(MAX_AWAY_MS, away) / 60_000;
   if (mins <= 0) return p;
   const r = p.asleep ? RATE.asleep : RATE.awake;
-  const funRate = p.sick ? r.fun * 2 : r.fun;
   const next: Pet = {
     ...p,
     food: clamp(p.food + r.food * mins),
     energy: clamp(p.energy + r.energy * mins),
-    fun: clamp(p.fun + funRate * mins),
+    fun: clamp(p.fun + (p.sick ? r.fun * 1.5 : r.fun) * mins),
     last: now,
   };
   if (next.asleep && next.energy >= 100) next.asleep = false; // she wakes up on her own
-  if (!next.asleep && next.energy <= 0) next.asleep = true; // or passes out on the keyboard
-  // poop: only while awake, at most 3 piles; one pile per interval, even after a long absence
+  // poop: only while awake, at most 3 piles
   if (!next.asleep && next.poopAt && now >= next.poopAt && next.poop < 3) {
     next.poop += 1;
     next.poopAt = now + POOP_EVERY_MS;
   } else if (!next.poopAt) next.poopAt = now + POOP_EVERY_MS;
-  // sickness: two or more piles left for a while
-  if (next.poop >= 2 && !next.sick) {
+  // sickness: days of a dirty floor; and it clears on its own after a day
+  if (next.sick) {
+    if (now - next.sickAt >= RECOVER_AFTER_MS) { next.sick = false; next.sickAt = 0; }
+  } else if (next.poop >= 2) {
     if (!next.sickAt) next.sickAt = now;
-    else if (now - next.sickAt >= SICK_AFTER_MS) next.sick = true;
-  } else if (next.poop < 2) next.sickAt = 0;
+    else if (now - next.sickAt >= SICK_AFTER_MS) { next.sick = true; next.sickAt = now; }
+  } else next.sickAt = 0;
+  // while you were gone: the auto-feeder topped her up, she slept, and someone cleaned most of the floor
+  if (away >= CATCH_UP_AFTER_MS) {
+    next.food = Math.max(next.food, 45);
+    next.energy = Math.max(next.energy, 60);
+    next.fun = Math.max(next.fun, 42); // she found the yarn on her own
+    next.poop = Math.min(next.poop, 1);
+  }
+  // night routine: lights off on her own in the small hours, up again in the morning
+  const d = new Date(now); const hour = d.getHours(); const key = dayKey(d);
+  if (hour >= NIGHT_FROM && hour < NIGHT_TO && !next.asleep && next.nightKey !== key) { next.asleep = true; next.nightKey = key; }
+  if (hour >= NIGHT_TO && next.asleep && next.dayKey !== key && next.nightKey === key) { next.asleep = false; next.dayKey = key; }
   return next;
+}
+
+/** A brand-new cat, for demos and screenshots. */
+export function fresh(now: number): Pet {
+  return { ...DEFAULT_PET, born: now, last: now, poopAt: now + POOP_EVERY_MS };
 }
 
 export function needs(p: Pet): Need[] {
   const n: Need[] = [];
   if (p.sick) n.push("sick");
-  if (p.food < 25) n.push("hungry");
+  if (p.food < 40) n.push("hungry");
   if (p.poop >= 2) n.push("poop");
-  if (p.fun < 25) n.push("bored");
-  if (!p.asleep && p.energy < 20) n.push("sleepy");
+  if (p.fun < 40) n.push("bored");
+  if (!p.asleep && p.energy < 35) n.push("sleepy");
   return n;
 }
 
 export function mood(p: Pet): Mood {
   if (p.asleep) return "NAPPING";
   if (p.sick) return "SICK";
-  if (p.food < 25) return "HUNGRY";
-  if (p.energy < 20) return "SLEEPY";
-  if (p.fun < 25) return "BORED";
+  if (p.food < 40) return "HUNGRY";
+  if (p.energy < 35) return "SLEEPY";
+  if (p.fun < 40) return "BORED";
   if (p.poop >= 2) return "MESSY";
   if ((p.food + p.energy + p.fun) / 3 > 75 && p.poop === 0) return "PURRING";
   return "CONTENT";
 }
 
 /** Hearts for the meter screen, 0–4. */
-export const hearts = (v: number) => Math.round(clamp(v) / 25);
+export const hearts = (v: number) => Math.max(0, Math.min(4, Math.round((v - FLOOR) / ((100 - FLOOR) / 4))));
 
 export type Outcome = { pet: Pet; say: string; log: string; ok: boolean };
 
@@ -104,7 +130,7 @@ export function playResult(p: Pet, wins: number, rounds: number): Outcome {
 }
 export function canPlay(p: Pet): Outcome | null {
   if (p.asleep) return { pet: p, say: "zzz", log: "she is asleep · try the light", ok: false };
-  if (p.energy < 15) return { pet: p, say: "too tired.", log: "too tired to play · flopped over", ok: false };
+  if (p.energy < 30) return { pet: p, say: "too tired.", log: "too tired to play · flopped over", ok: false };
   return null;
 }
 export function clean(p: Pet): Outcome {
